@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.codegen.state.md5base64
+
 /*
  * Copyright © 2024 Integr
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -11,20 +13,23 @@
  * limitations under the License.
  */
 
+repositories {
+    mavenCentral()
+    gradlePluginPortal()
+}
+
 plugins {
     kotlin("jvm") version "1.9.23"
-    id("io.github.boolivar.sonatype-portal-publish") version "0.1.0"
+    id("tech.yanand.maven-central-publish") version "1.2.0"
     `maven-publish`
     `java-library`
     signing
 }
 
-group = "net.integr"
-version = "1.0.0"
+group = "io.github.integr-0"
+version = "1.0.3"
 
-repositories {
-    mavenCentral()
-}
+
 
 java {
     withJavadocJar()
@@ -52,7 +57,7 @@ publishing {
             pom {
                 name = "Auto File Handler"
                 description = "Used to efficiently transform and files for the Cloudflight Coding Competition"
-                url = "https://github.com/Integr-0/RegexBuilder"
+                url = "https://github.com/Integr-0/AutoFileHandler"
                 licenses {
                     license {
                         name = "The Apache License, Version 2.0"
@@ -67,9 +72,9 @@ publishing {
                     }
                 }
                 scm {
-                    connection = "scm:git:git://github.com/Integr-0/RegexBuilder.git"
-                    developerConnection = "scm:git:ssh://github.com/Integr-0/RegexBuilder.git"
-                    url = "https://github.com/Integr-0/RegexBuilder"
+                    connection = "scm:git:git://github.com/Integr-0/AutoFileHandler.git"
+                    developerConnection = "scm:git:ssh://github.com/Integr-0/AutoFileHandler.git"
+                    url = "https://github.com/Integr-0/AutoFileHandler"
                 }
             }
         }
@@ -77,13 +82,26 @@ publishing {
 
     repositories {
         maven {
-            val releasesRepoUrl = uri(layout.buildDirectory.dir("repos/releases"))
-            val snapshotsRepoUrl = uri(layout.buildDirectory.dir("repos/snapshots"))
-            url = if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl
+            name = "Local"
+            url = uri(layout.buildDirectory.dir("repos/bundles"))
         }
     }
 }
 
 signing {
     sign(publishing.publications["mavenJava"])
+}
+
+mavenCentral {
+    repoDir.set(layout.buildDirectory.dir("repos/bundles"))
+    val sonatypeToken = project.findProperty("sonatypeToken") as String?
+    authToken.set(sonatypeToken)
+    publishingType.set("AUTOMATIC")
+    maxWait = 120
+}
+
+task("clearBundles") {
+    doFirst {
+        file(layout.buildDirectory.dir("repos/bundles")).deleteRecursively()
+    }
 }

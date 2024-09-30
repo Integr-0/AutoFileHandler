@@ -18,10 +18,14 @@ import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 import kotlin.io.path.*
 
-class AutoFileHandler(private val inputPath: String, private val outputFolder: String = "./outputs/") {
+class AutoFileHandler(private val inputPath: String, private val outputFolder: String = "./outputs") {
     private val fileOutputList: HashMap<String, MutableList<String>> = hashMapOf()
 
-    private val transformedOutputPath = "$outputFolder/${inputPath.replaceRange(inputPath.lastIndexOf('.')..<inputPath.length, "")}/"
+    private val transformedOutputPath = if (outputFolder.endsWith("/")) {
+        "$outputFolder${inputPath.replaceRange(inputPath.lastIndexOf('.')..<inputPath.length, "")}/"
+    } else {
+        "$outputFolder/${inputPath.replaceRange(inputPath.lastIndexOf('.')..<inputPath.length, "")}/"
+    }
 
     fun extractAndReadContents(): AutoFileHandler {
         try {
@@ -59,7 +63,6 @@ class AutoFileHandler(private val inputPath: String, private val outputFolder: S
             }
         } catch (e: Exception) {
             println("✕ Error unzipping and reading file: $e")
-            e.printStackTrace()
         }
 
         return this
