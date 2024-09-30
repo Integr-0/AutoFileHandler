@@ -1,0 +1,89 @@
+/*
+ * Copyright © 2024 Integr
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+plugins {
+    kotlin("jvm") version "1.9.23"
+    id("io.github.boolivar.sonatype-portal-publish") version "0.1.0"
+    `maven-publish`
+    `java-library`
+    signing
+}
+
+group = "net.integr"
+version = "1.0.0"
+
+repositories {
+    mavenCentral()
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+kotlin {
+    jvmToolchain(17)
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("mavenJava") {
+            artifactId = "auto-file-handler"
+            from(components["java"])
+            versionMapping {
+                usage("java-api") {
+                    fromResolutionOf("runtimeClasspath")
+                }
+
+                usage("java-runtime") {
+                    fromResolutionResult()
+                }
+            }
+            pom {
+                name = "Auto File Handler"
+                description = "Used to efficiently transform and files for the Cloudflight Coding Competition"
+                url = "https://github.com/Integr-0/RegexBuilder"
+                licenses {
+                    license {
+                        name = "The Apache License, Version 2.0"
+                        url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+                    }
+                }
+                developers {
+                    developer {
+                        id = "integr"
+                        name = "Integr"
+                        email = "-"
+                    }
+                }
+                scm {
+                    connection = "scm:git:git://github.com/Integr-0/RegexBuilder.git"
+                    developerConnection = "scm:git:ssh://github.com/Integr-0/RegexBuilder.git"
+                    url = "https://github.com/Integr-0/RegexBuilder"
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            val releasesRepoUrl = uri(layout.buildDirectory.dir("repos/releases"))
+            val snapshotsRepoUrl = uri(layout.buildDirectory.dir("repos/snapshots"))
+            url = if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl
+        }
+    }
+}
+
+signing {
+    sign(publishing.publications["mavenJava"])
+}
