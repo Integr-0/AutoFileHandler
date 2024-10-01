@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package util
+package util.file
 
 import java.io.File
 import java.util.zip.ZipEntry
@@ -26,6 +26,7 @@ class AutoFileHandler(private val inputPath: String, private val outputFolder: S
     } else {
         "$outputFolder/${inputPath.replaceRange(inputPath.lastIndexOf('.')..<inputPath.length, "")}/"
     }
+
 
     fun extractAndReadContents(): AutoFileHandler {
         try {

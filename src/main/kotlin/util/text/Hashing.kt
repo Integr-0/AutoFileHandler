@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package util
+package util.text
 
 import java.math.BigInteger
 import java.security.MessageDigest
@@ -75,3 +75,6 @@ class Hashing {
         }
     }
 }
+
+
+

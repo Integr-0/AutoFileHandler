@@ -25,6 +25,10 @@ class PathFinder(private val worldState: List<List<Boolean>>) {
 
         openList.add(PathNode(start.first, start.second).setCost(end, start))
 
+        println("   ● Starting pathfinder from $start to $end")
+
+        val st = System.currentTimeMillis()
+
         while (openList.isNotEmpty()) {
             // open new nodes
             val currentNode = openList.minByOrNull { it.f }!!
@@ -36,6 +40,10 @@ class PathFinder(private val worldState: List<List<Boolean>>) {
                     path.add(Pair(current.x, current.y))
                     current = current.parent
                 }
+
+                val delta = System.currentTimeMillis() - st
+
+                println("   ✓ Path successfully found (${delta}ms).")
 
                 return path.reversed()
             } else {
@@ -62,6 +70,10 @@ class PathFinder(private val worldState: List<List<Boolean>>) {
                 }
             }
         }
+
+        val delta = System.currentTimeMillis() - st
+
+        println("   ✕ No path found (${delta}ms).")
 
         return listOf()
     }
