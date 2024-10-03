@@ -18,13 +18,22 @@ import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 import kotlin.io.path.*
 
+fun main() {
+    val inputPath = "./inputs/a_example.zip"
+
+    AutoFileHandler(inputPath)
+        .extractAndReadContents()
+        .transformEachFileAndWriteOutput { it }
+}
+
 class AutoFileHandler(private val inputPath: String, private val outputFolder: String = "./outputs") {
     private val fileOutputList: HashMap<String, MutableList<String>> = hashMapOf()
+    private var inputFileName = inputPath.substringAfterLast('/')
 
     private val transformedOutputPath = if (outputFolder.endsWith("/")) {
-        "$outputFolder${inputPath.replaceRange(inputPath.lastIndexOf('.')..<inputPath.length, "")}/"
+        "$outputFolder${inputFileName.replaceRange(inputFileName.lastIndexOf('.')..<inputFileName.length, "")}/"
     } else {
-        "$outputFolder/${inputPath.replaceRange(inputPath.lastIndexOf('.')..<inputPath.length, "")}/"
+        "$outputFolder/${inputFileName.replaceRange(inputFileName.lastIndexOf('.')..<inputFileName.length, "")}/"
     }
 
 
