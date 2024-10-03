@@ -1,5 +1,7 @@
 package util.math
 
+import java.lang.StrictMath.pow
+
 class MathE {
     companion object {
         fun factorial(n: Int): Int {
@@ -58,6 +60,95 @@ class MathE {
 
         fun isPowerOfTwo(n: Int): Boolean {
             return n > 0 && n and n - 1 == 0
+        }
+
+        fun countDigits(n: Int): Int {
+            return n.toString().length
+        }
+
+        fun sumDigits(n: Int): Int {
+            var num = n
+            var sum = 0
+            while (num > 0) {
+                sum += num % 10
+                num /= 10
+            }
+            return sum
+        }
+
+        fun reverseDigits(n: Int): Int {
+            var num = n
+            var rev = 0
+            while (num > 0) {
+                rev = rev * 10 + num % 10
+                num /= 10
+            }
+            return rev
+        }
+
+        fun isPalindrome(n: Int): Boolean {
+            return n == reverseDigits(n)
+        }
+
+        fun isArmstrong(n: Int): Boolean {
+            var num = n
+            val digits = countDigits(n)
+            var sum = 0
+            while (num > 0) {
+                sum += pow(num % 10.0, digits.toDouble()).toInt()
+                num /= 10
+            }
+            return sum == n
+        }
+
+        fun isStrong(n: Int): Boolean {
+            var num = n
+            var sum = 0
+            while (num > 0) {
+                sum += factorial(num % 10)
+                num /= 10
+            }
+            return sum == n
+        }
+
+        fun isDisarium(n: Int): Boolean {
+            var num = n
+            var sum = 0
+            var digits = countDigits(n)
+            while (num > 0) {
+                sum += pow(num % 10.0, digits.toDouble()).toInt()
+                num /= 10
+                digits--
+            }
+            return sum == n
+        }
+
+        fun isHarshad(n: Int): Boolean {
+            return n % sumDigits(n) == 0
+        }
+
+        fun isPronic(n: Int): Boolean {
+            var i = 0
+            while (i * (i + 1) <= n) {
+                if (i * (i + 1) == n) return true
+                i++
+            }
+            return false
+        }
+
+        fun fibonacciDigitCount(n: Int): Int {
+            if (n == 0) return 1
+            var a = 0
+            var b = 1
+            var c = 0
+            var count = 1
+            for (i in 2..n) {
+                c = a + b
+                a = b
+                b = c
+                count = countDigits(c)
+            }
+            return count
         }
     }
 }

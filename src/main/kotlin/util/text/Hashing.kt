@@ -73,6 +73,22 @@ class Hashing {
         fun String.base64Decode(): String {
             return String(java.util.Base64.getDecoder().decode(toByteArray()))
         }
+
+        fun String.hash(algorithm: String): String {
+            val md = MessageDigest.getInstance(algorithm)
+            val digest = md.digest(toByteArray())
+            val bigInt = BigInteger(1, digest)
+            val hashedString = bigInt.toString(16)
+            return hashedString
+        }
+
+        fun String.hash(algorithm: String, charset: String): String {
+            val md = MessageDigest.getInstance(algorithm)
+            val digest = md.digest(toByteArray(charset(charset)))
+            val bigInt = BigInteger(1, digest)
+            val hashedString = bigInt.toString(16)
+            return hashedString
+        }
     }
 }
 
