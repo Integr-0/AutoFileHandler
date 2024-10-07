@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.codegen.state.md5base64
+import kotlin.script.experimental.jvm.runCompiledScript
 
 /*
  * Copyright © 2024 Integr
@@ -27,7 +28,7 @@ plugins {
 }
 
 group = "io.github.integr-0"
-version = "1.0.3"
+version = "1.0.4"
 
 dependencies {
     implementation("io.github.integr-0:regex-builder:1.0.0")
@@ -85,7 +86,7 @@ publishing {
     repositories {
         maven {
             name = "Local"
-            url = uri(layout.buildDirectory.dir("repos/bundles"))
+            url = uri(layout.buildDirectory.dir("repos/bundles/$version"))
         }
     }
 }
@@ -95,15 +96,9 @@ signing {
 }
 
 mavenCentral {
-    repoDir.set(layout.buildDirectory.dir("repos/bundles"))
+    repoDir.set(layout.buildDirectory.dir("repos/bundles/$version"))
     val sonatypeToken = project.findProperty("sonatypeToken") as String?
     authToken.set(sonatypeToken)
     publishingType.set("AUTOMATIC")
     maxWait = 120
-}
-
-task("clearBundles") {
-    doFirst {
-        file(layout.buildDirectory.dir("repos/bundles")).deleteRecursively()
-    }
 }
