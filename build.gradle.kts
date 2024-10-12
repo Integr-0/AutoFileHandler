@@ -28,7 +28,7 @@ plugins {
 }
 
 group = "io.github.integr-0"
-version = "1.0.4"
+version = "1.0.5"
 
 dependencies {
     implementation("io.github.integr-0:regex-builder:1.0.0")

@@ -18,14 +18,6 @@ import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 import kotlin.io.path.*
 
-fun main() {
-    val inputPath = "./inputs/a_example.zip"
-
-    AutoFileHandler(inputPath)
-        .extractAndReadContents()
-        .transformEachFileAndWriteOutput { it }
-}
-
 class AutoFileHandler(private val inputPath: String, private val outputFolder: String = "./outputs") {
     private val fileOutputList: HashMap<String, MutableList<String>> = hashMapOf()
     private var inputFileName = inputPath.substringAfterLast('/')
@@ -96,20 +88,37 @@ class AutoFileHandler(private val inputPath: String, private val outputFolder: S
         return fileOutputList
     }
 
-    fun transformEachFileAndWriteOutput(transformer: (MutableList<String>) -> Iterable<String>) {
+    fun transformEachFileAndWriteOutput(transformer: OutputContext.(MutableList<String>) -> Unit) {
         println("● Creating directories for output: $transformedOutputPath")
         Path(transformedOutputPath).createDirectories()
 
         println("● Transforming and writing output.")
         for ((path, value) in fileOutputList) {
-            val result = transformer(value)
+            val outContext = OutputContext()
+            outContext.transformer(value)
             val outputPath = transformedOutputPath + path.replaceAfterLast('.', "out")
 
-            Path(outputPath).writeLines(result)
+            Path(outputPath).writeLines(outContext.getOutputList())
 
             println("   → Wrote output to: $outputPath")
         }
 
         println("✓ Finished transforming and writing output.")
+    }
+}
+
+class OutputContext {
+    private val outputList: MutableList<String> = mutableListOf()
+
+    fun addOutput(output: String) {
+        outputList.add(output)
+    }
+
+    fun getOutputList(): MutableList<String> {
+        return outputList
+    }
+
+    fun debug(string: String) {
+        println("   ↺ $string")
     }
 }
